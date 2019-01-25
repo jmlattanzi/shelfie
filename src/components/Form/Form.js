@@ -9,78 +9,90 @@ class Form extends Component {
             name: '',
             price: 0,
             imgurl: '',
+            currentProduct: {},
         }
-
-        this.handleCancel = this.handleCancel.bind(this)
-        this.handleImageURLChange = this.handleImageURLChange.bind(this)
-        this.handleNameChange = this.handleNameChange.bind(this)
-        this.handlePriceChange = this.handlePriceChange.bind(this)
-        this.handleSubmit = this.handleSubmit.bind(this)
     }
 
-    // why isnt all of this handled by a form? gross
-    handleImageURLChange(e) {
-        this.setState({ imgurl: e.target.value })
+    componentDidUpdate(prevProps) {
+        if (this.props.currentProduct !== prevProps.currentProduct) {
+            this.setState({
+                currentProduct: {
+                    id: this.props.currentProduct[0].id,
+                    name: this.props.currentProduct[0].name,
+                    price: this.props.currentProduct[0].price,
+                    imgurl: this.props.currentProduct[0].imgurl,
+                },
+            })
+        }
     }
 
-    handleNameChange(e) {
-        //handle name changes
-        this.setState({ name: e.target.value })
+    handleChange = (e) => {
+        e.preventDefault()
+        this.setState({
+            [e.target.name]: e.target.value,
+            currentProduct: {
+                ...this.state.currentProduct,
+                [e.target.name]: e.target.value,
+            },
+        })
     }
 
-    handlePriceChange(e) {
-        // handle price change
-        this.setState({ price: e.target.value })
-    }
-
-    handleCancel() {
+    handleCancel = () => {
         this.setState({
             name: '',
             price: 0,
             imgurl: '',
+            currentProduct: null,
         })
     }
 
-    handleSubmit() {
-        const { getData } = this.props
-        axios
-            .post('/api/inventory', this.state)
-            .then(() => {
-                getData()
-                this.handleCancel()
-            })
-            .catch((err) => console.log(err))
+    submitNewData = () => {
+        if (this.state.currentProduct !== {}) {
+            axios
+                .put(
+                    `/api/inventory/${this.state.currentProduct.id}`,
+                    this.state.currentProduct
+                )
+                .then((res) => console.log(res.data))
+                .catch((err) => console.log(err))
+        }
     }
 
     render() {
         return (
             <div>
-                <div className='inputContainer'>
-                    <input
-                        type='text'
-                        placeholder='image URL'
-                        value={this.state.imgurl}
-                        onChange={(e) => this.handleImageURLChange(e)}
-                    />
-                    <input
-                        type='text'
-                        placeholder='name'
-                        value={this.state.name}
-                        onChange={(e) => this.handleNameChange(e)}
-                    />
-                    <input
-                        type='text'
-                        placeholder='price'
-                        value={this.state.price}
-                        onChange={(e) => this.handlePriceChange(e)}
-                    />
-                </div>
-                <div className='buttonContainer'>
-                    <button onClick={this.handleCancel}>Cancel</button>
-                    <button onClick={this.handleSubmit}>
-                        Add to Inventory
-                    </button>
-                </div>
+                <input
+                    type='text'
+                    value={
+                        this.state.currentProduct !== null
+                            ? this.state.currentProduct.imgurl
+                            : this.state.imgurl
+                    }
+                    name='imgurl'
+                    onChange={(e) => this.handleChange(e)}
+                />
+                <input
+                    type='text'
+                    value={
+                        this.state.currentProduct !== null
+                            ? this.state.currentProduct.name
+                            : this.state.name
+                    }
+                    name='name'
+                    onChange={(e) => this.handleChange(e)}
+                />
+                <input
+                    type='text'
+                    value={
+                        this.state.currentProduct !== null
+                            ? this.state.currentProduct.price
+                            : this.state.price
+                    }
+                    name='price'
+                    onChange={(e) => this.handleChange(e)}
+                />
+                <button onClick={this.handleCancel}>Cancel</button>
+                <button onClick={this.submitNewData}>Add to Inventory</button>
             </div>
         )
     }

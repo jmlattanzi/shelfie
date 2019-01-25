@@ -12,7 +12,9 @@ function Product(props) {
                 <button onClick={(id) => props.deleteProduct(props.id)}>
                     delete
                 </button>
-                <button>edit</button>
+                <button onClick={(id) => props.getCurrentProduct(props.id)}>
+                    edit
+                </button>
             </div>
         </div>
     )

@@ -10,7 +10,6 @@ class Dashboard extends Component {
     }
 
     deleteProduct(id) {
-        // delete
         axios
             .delete(`/api/inventory/${id}`)
             .then(this.props.getData())
@@ -23,11 +22,13 @@ class Dashboard extends Component {
                 <h1>Dashboard</h1>
                 {this.props.inventory.map((product) => (
                     <Product
+                        key={product.id}
                         name={product.name}
                         price={product.price}
                         imgurl={product.imgurl}
                         id={product.id}
                         deleteProduct={this.deleteProduct}
+                        getCurrentProduct={this.props.getCurrentProduct}
                     />
                 ))}
             </div>

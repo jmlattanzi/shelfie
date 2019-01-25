@@ -17,6 +17,7 @@ massive(process.env.CONNECTION_STRING)
 app.get('/api/inventory', ic.getInventory)
 app.post('/api/inventory', ic.createProduct)
 app.delete('/api/inventory/:id', ic.deleteProduct)
+app.put('/api/inventory/:id', ic.editProduct)
 
 const port = 3001 || process.env.PORT
 app.listen(port, console.log(`Listening on port ${port}...`))

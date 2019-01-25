@@ -19,11 +19,20 @@ module.exports = {
         const db = req.app.get('db')
 
         db.delete_product(req.params.id)
-            .then((data) => res.sattus(200).json(data))
+            .then((data) => res.status(200).json(data))
             .catch((err) => res.status(500).json('Error with DELETE'))
     },
 
     editProduct: (req, res) => {
         const db = req.app.get('db')
+
+        db.edit_product([
+            req.params.id,
+            req.body.name,
+            req.body.price,
+            req.body.imgurl,
+        ])
+            .then((data) => res.status(200).json(data))
+            .catch((err) => res.status(500).send('Error with PUT'))
     },
 }
