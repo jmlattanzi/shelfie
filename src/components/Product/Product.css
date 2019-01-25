@@ -1,0 +1,42 @@
+.product {
+    display: flex;
+    flex-direction: row;
+    border: 1px solid black;
+    width: 20%;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto;
+    background-color: #d34735;
+}
+
+.productInfo {
+    display: flex;
+    flex-direction: row;
+}
+
+.productImage {
+    /* border: 1px solid black; */
+}
+
+.productDetails {
+    display: flex;
+    flex-direction: column;
+}
+
+.buttonContainer {
+}
+
+.deleteButton {
+    border-style: none;
+    background-color: #3ad886;
+    padding: 5px;
+    margin: 5px;
+}
+
+.buttonContainer > .editButton {
+    text-decoration: none;
+    color: black;
+    background-color: #3ad886;
+    font-size: 11px;
+    padding: 5px;
+}

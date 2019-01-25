@@ -1,0 +1,18 @@
+.input {
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+    margin: 10px auto;
+}
+
+input {
+    margin: 10px;
+}
+
+.submitButton,
+.cancelButton {
+    border-style: none;
+    margin: 10px;
+    padding: 5px;
+    background-color: #ed6b5a;
+}

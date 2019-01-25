@@ -1,35 +1,43 @@
 import React, { Component } from 'react'
 import axios from 'axios'
+import './Form.css'
 
 class Form extends Component {
     constructor(props) {
         super(props)
 
         this.state = {
-            name: '',
-            price: 0,
-            imgurl: '',
             currentProduct: {},
+            edit: false,
         }
     }
 
-    componentDidUpdate(prevProps) {
-        if (this.props.currentProduct !== prevProps.currentProduct) {
-            this.setState({
-                currentProduct: {
-                    id: this.props.currentProduct[0].id,
-                    name: this.props.currentProduct[0].name,
-                    price: this.props.currentProduct[0].price,
-                    imgurl: this.props.currentProduct[0].imgurl,
-                },
+    componentDidMount() {
+        axios
+            .get(`/api/inventory/${this.props.match.params.id}`)
+            .then((res) => {
+                this.setState({ currentProduct: res.data })
+                console.log(res.data)
             })
-        }
+            .catch((err) => console.log(err))
     }
+
+    // componentDidUpdate(prevProps) {
+    //     if (this.props.currentProduct !== prevProps.currentProduct) {
+    //         this.setState({
+    //             currentProduct: {
+    //                 id: this.props.currentProduct[0].id,
+    //                 name: this.props.currentProduct[0].name,
+    //                 price: this.props.currentProduct[0].price,
+    //                 imgurl: this.props.currentProduct[0].imgurl,
+    //             },
+    //         })
+    //     }
+    // }
 
     handleChange = (e) => {
         e.preventDefault()
         this.setState({
-            [e.target.name]: e.target.value,
             currentProduct: {
                 ...this.state.currentProduct,
                 [e.target.name]: e.target.value,
@@ -39,60 +47,81 @@ class Form extends Component {
 
     handleCancel = () => {
         this.setState({
-            name: '',
-            price: 0,
-            imgurl: '',
-            currentProduct: null,
+            currentProduct: {
+                name: '',
+                price: 0,
+                imgurl: '',
+            },
         })
     }
 
+    addItem = () => {
+        console.log(this.state.currentProduct.imgurl)
+        axios
+            .post(`/api/inventory`, {
+                imgurl: this.state.currentProduct.imgurl,
+                name: this.state.currentProduct.name,
+                price: this.state.currentProduct.price,
+            })
+            .then((res) => console.log(res.data))
+            .catch((err) => console.log(err))
+    }
+
     submitNewData = () => {
-        if (this.state.currentProduct !== {}) {
-            axios
-                .put(
-                    `/api/inventory/${this.state.currentProduct.id}`,
-                    this.state.currentProduct
-                )
-                .then((res) => console.log(res.data))
-                .catch((err) => console.log(err))
-        }
+        axios
+            .put(`/api/inventory/${this.props.match.params.id}`, {
+                imgurl: this.state.currentProduct.imgurl,
+                name: this.state.currentProduct.name,
+                price: this.state.currentProduct.price,
+            })
+            .then((res) => console.log(res.data))
+            .catch((err) => console.log(err))
     }
 
     render() {
+        console.log(this.state.currentProduct.imgurl)
         return (
-            <div>
+            <div className='input'>
+                <img src={this.state.currentProduct.imgurl} alt='broken' />
                 <input
                     type='text'
-                    value={
-                        this.state.currentProduct !== null
-                            ? this.state.currentProduct.imgurl
-                            : this.state.imgurl
-                    }
+                    value={this.state.currentProduct.imgurl}
                     name='imgurl'
+                    placeholder='image url'
                     onChange={(e) => this.handleChange(e)}
                 />
                 <input
                     type='text'
-                    value={
-                        this.state.currentProduct !== null
-                            ? this.state.currentProduct.name
-                            : this.state.name
-                    }
+                    value={this.state.currentProduct.name}
                     name='name'
+                    placeholder='product name'
                     onChange={(e) => this.handleChange(e)}
                 />
                 <input
                     type='text'
-                    value={
-                        this.state.currentProduct !== null
-                            ? this.state.currentProduct.price
-                            : this.state.price
-                    }
+                    value={this.state.currentProduct.price}
                     name='price'
+                    placeholder='product price'
                     onChange={(e) => this.handleChange(e)}
                 />
-                <button onClick={this.handleCancel}>Cancel</button>
-                <button onClick={this.submitNewData}>Add to Inventory</button>
+                <div className='buttonContainer'>
+                    <button
+                        className='cancelButton'
+                        onClick={this.handleCancel}>
+                        Cancel
+                    </button>
+                    {!this.props.match.params.id ? (
+                        <button className='submitButton' onClick={this.addItem}>
+                            Add to Inventory
+                        </button>
+                    ) : (
+                        <button
+                            className='submitButton'
+                            onClick={this.submitNewData}>
+                            Save Changes
+                        </button>
+                    )}
+                </div>
             </div>
         )
     }

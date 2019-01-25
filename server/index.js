@@ -15,6 +15,7 @@ massive(process.env.CONNECTION_STRING)
     .catch((err) => console.log(err))
 
 app.get('/api/inventory', ic.getInventory)
+app.get('/api/inventory/:id', ic.getItem)
 app.post('/api/inventory', ic.createProduct)
 app.delete('/api/inventory/:id', ic.deleteProduct)
 app.put('/api/inventory/:id', ic.editProduct)

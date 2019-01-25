@@ -7,6 +7,14 @@ module.exports = {
             .catch((err) => res.status(500).send('Error with GET'))
     },
 
+    getItem: (req, res) => {
+        const db = req.app.get('db')
+
+        db.get_item(req.params.id)
+            .then((data) => res.status(200).json(data))
+            .catch((err) => res.status(500).send('Error with get_item'))
+    },
+
     createProduct: (req, res) => {
         const db = req.app.get('db')
 
